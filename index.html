@@ -106,7 +106,7 @@
 		</table>
 		<hr>
 		<form name="contatoForm">
-			<input class="form-control" type="text" ng-model="contato.nome" placeholder="Nome" name="nome" ng-required="true">
+			<input class="form-control" type="text" ng-model="contato.nome" placeholder="Nome" name="nome" ng-required="true" ng-minlength="10">
 			<input class="form-control" type="text" ng-model="contato.telefone" placeholder="Telefone" name="telefone" ng-required="true">
 			<select class="form-control" ng-model="contato.operadora" name="operadora" ng-options="operadora.nome group by operadora.categoria for operadora in operadoras" ng-required="true">
 			<!--<select class="form-control" ng-model="contato.operadora" ng-options="operadora.codigo as operadora.nome for operadora in operadoras">-->
@@ -118,7 +118,9 @@
 			<p>{{contato.nome}} - {{contato.telefone}} - {{contato.operadora.nome}}</p>
 		</div>
 
-		<div ng-show="contatoForm.nome.$invalid && contatoForm.nome.$dirty" class="alert alert-danger">Por favor, preencha o nome!</div>
+		<div ng-show="contatoForm.nome.$error.required && contatoForm.nome.$dirty" class="alert alert-danger">Por favor, preencha o nome!</div>
+		<div ng-show="contatoForm.nome.$error.minlength" class="alert alert-danger">O campo nome tem que ter, no mínimo, 10 caracteres.</div>
+
 		<div ng-show="contatoForm.telefone.$invalid && contatoForm.telefone.$dirty" class="alert alert-danger">Por favor, preencha o telefone!</div>
 		<div ng-show="contatoForm.operadora.$invalid && contatoForm.operadora.$dirty" class="alert alert-danger">Por favor, preencha a operadora!</div>
 
