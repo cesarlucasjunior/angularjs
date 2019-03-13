@@ -18,6 +18,14 @@
 			margin-top: 8px;
 		}
 
+		.selecionado{
+			background-color: #ffffe0;
+		}
+
+		.negrito{
+			font-weight: bold;
+		}
+
 	</style>
 
 	<meta charset="utf-8">
@@ -35,6 +43,16 @@
 				{nome:"Bruno", telefone:"99999678"},
 				{nome:"Maria", telefone:"99912345"}
 			];
+			$scope.operadoras = [
+				{nome: "Oi", codigo: 14, categoria:"Celular"},
+				{nome: "Vivo", codigo: 15, categoria:"Celular"},
+				{nome: "Tim", codigo: 41, categoria:"Celular"},
+				{nome: "GVT", codigo: 25, categoria:"Fixo"},
+				{nome: "Embratel", codigo: 21, categoria:"Fixo"}
+			];
+
+			//$scope.classeA = "selecionado";
+			//$scope.classeB = "negrito";
 
 			$scope.adicionarContato = function(contato){
 				//console.log($scope.nome);
@@ -43,6 +61,19 @@
 				//$scope.contatos.push(angular.copy(contato)); - prefiro o delete, mas pode usar essa forma.
 				$scope.contatos.push(contato);
 				delete $scope.contato;
+				$scope.contatoForm.$setPristine();
+			};
+
+			$scope.apagarContatos = function(contatos){
+				$scope.contatos = contatos.filter(function(contato){
+					if(!contato.selecionado) return contato;
+				});//subtituindo o array original pelo array dos não selecionados
+			};
+
+			$scope.isContatoSelecionado = function(contatos){
+				return contatos.some(function(contato){
+					return contato.selecionado;
+				});
 			};
 
 		});
@@ -56,32 +87,47 @@
 	<div class="jumbotron">
 		<!--<h4 ng-bind="nomeApp"></h4>-->
 		<h3>{{nomeApp}}</h3>
-		<table class="table table-striped">
+		<table ng-show="contatos.length > 0" class="table table-striped"> <!--table-striped-->
 			<tr> <!--Linha cabeçalho/header-->
+				<th></th>
 				<th>Nome</th>
 				<th>Telefone</th>
+				<th>Operadora</th>
 			</tr>
 
 			<!--Linha de iteração do array-->
-			<tr ng-repeat="contato in contatos">
+			<tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos">
 				<!--<td ng-repeat="(key, value) in contato">{{value}}</td>-->
+				<td><input type="checkbox" ng-model="contato.selecionado"/></td>
 				<td>{{contato.nome}}</td>
 				<td>{{contato.telefone}}</td>
+				<td>{{contato.operadora.nome}}</td>
 			</tr>
 		</table>
-		
 		<hr>
-
-		<input class="form-control" type="text" ng-model="contato.nome" placeholder="Nome">
-		<input class="form-control" type="text" ng-model="contato.telefone" placeholder="Telefone">
+		<form name="contatoForm">
+			<input class="form-control" type="text" ng-model="contato.nome" placeholder="Nome" name="nome" ng-required="true">
+			<input class="form-control" type="text" ng-model="contato.telefone" placeholder="Telefone" name="telefone" ng-required="true">
+			<select class="form-control" ng-model="contato.operadora" name="operadora" ng-options="operadora.nome group by operadora.categoria for operadora in operadoras" ng-required="true">
+			<!--<select class="form-control" ng-model="contato.operadora" ng-options="operadora.codigo as operadora.nome for operadora in operadoras">-->
+			<option value="">Selecione uma operadora</option>
+			</select>
+		</form>
 
 		<div class=inter-form>
-			<p>{{contato.nome}} - {{contato.telefone}}</p>
+			<p>{{contato.nome}} - {{contato.telefone}} - {{contato.operadora.nome}}</p>
 		</div>
 
-		<button class="btn btn-primary btn-block" ng-click="adicionarContato(contato)">Adicionar Contato</button>
+		<div ng-show="contatoForm.nome.$invalid && contatoForm.nome.$dirty" class="alert alert-danger">Por favor, preencha o nome!</div>
+		<div ng-show="contatoForm.telefone.$invalid && contatoForm.telefone.$dirty" class="alert alert-danger">Por favor, preencha o telefone!</div>
+		<div ng-show="contatoForm.operadora.$invalid && contatoForm.operadora.$dirty" class="alert alert-danger">Por favor, preencha a operadora!</div>
+
+		<button class="btn btn-primary btn-block" ng-click="adicionarContato(contato)" ng-disabled="contatoForm.$invalid">Adicionar Contato</button>
+		<button class="btn btn-danger btn-block" ng-click="apagarContatos(contatos)" ng-if="isContatoSelecionado(contatos)">Apagar Contatos</button>
 
 	</div>
+
+	<!--<div ng-include="'footer.html'"></div>-->
 		
 </body>
 </html>
