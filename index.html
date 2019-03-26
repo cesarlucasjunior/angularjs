@@ -3,7 +3,7 @@
 <head>
 	<style type="text/css">
 		.jumbotron{
-			width: 400px;
+			width: 600px;
 			text-align: center;
 			margin-left: auto;
 			margin-right: auto;
@@ -39,9 +39,9 @@
 		angular.module("listaTelefonica").controller("listaTelefonicaController", function($scope){ //Settando controler da module.
 			$scope.nomeApp = "Lista Telefônica";
 			$scope.contatos = [
-				{nome:"Pedro", telefone:"99999999"},
-				{nome:"Bruno", telefone:"99999678"},
-				{nome:"Maria", telefone:"99912345"}
+				{nome:"Pedro", telefone:"99999999", data: new Date(), operadora: {nome: "Oi", codigo: 14, categoria:"Celular"}},
+				{nome:"Bruno", telefone:"99999678", data: new Date(), operadora: {nome: "Vivo", codigo: 15, categoria:"Celular"}},
+				{nome:"Maria", telefone:"99912345", data: new Date(), operadora: {nome: "GVT", codigo: 25, categoria:"Fixo"}}
 			];
 			$scope.operadoras = [
 				{nome: "Oi", codigo: 14, categoria:"Celular"},
@@ -87,21 +87,25 @@
 	<div class="jumbotron">
 		<!--<h4 ng-bind="nomeApp"></h4>-->
 		<h3>{{nomeApp}}</h3>
+		<input class="form-control" type="text" ng-model="criterioDeBusca" placeholder="Digite o nome para busca:"/><br>
 		<table ng-show="contatos.length > 0" class="table table-striped"> <!--table-striped-->
 			<tr> <!--Linha cabeçalho/header da tabela-->
 				<th></th>
 				<th>Nome</th>
 				<th>Telefone</th>
 				<th>Operadora</th>
+				<th>Data</th>
 			</tr>
 
 			<!--Linha de iteração do array-->
-			<tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos">
+			<tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos | filter:{nome:criterioDeBusca}">
 				<!--<td ng-repeat="(key, value) in contato">{{value}}</td>-->
 				<td><input type="checkbox" ng-model="contato.selecionado"/></td>
 				<td>{{contato.nome}}</td>
 				<td>{{contato.telefone}}</td>
 				<td>{{contato.operadora.nome}}</td>
+				<td>{{contato.data | date: "dd/MM/yyyy HH:mm"}}</td>
+
 			</tr>
 		</table>
 		<hr>
