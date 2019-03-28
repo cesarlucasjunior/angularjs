@@ -98,7 +98,7 @@
 			</tr>
 
 			<!--Linha de iteração do array-->
-			<tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos | filter:{nome:criterioDeBusca}">
+			<tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos | filter:{nome:criterioDeBusca} | orderBy:'nome : true'">
 				<!--<td ng-repeat="(key, value) in contato">{{value}}</td>-->
 				<td><input type="checkbox" ng-model="contato.selecionado"/></td>
 				<td>{{contato.nome}}</td>
